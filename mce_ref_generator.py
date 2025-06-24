@@ -35,6 +35,9 @@ if not user_identity:
     st.warning("Please enter your username in the sidebar to use the tool.")
     st.stop()
 
+# State variable for result
+generated_entry = None
+
 # Input Form
 with st.form("reference_form"):
     st.subheader("Enter Tender/Project Details")
@@ -55,7 +58,7 @@ with st.form("reference_form"):
             store["last_number"] += 1
             ref_num = f"{category}-{store['last_number']}"
 
-            entry = {
+            generated_entry = {
                 "reference_number": ref_num,
                 "category": category,
                 "project_name": project_name,
@@ -66,18 +69,20 @@ with st.form("reference_form"):
                 "deadline_date": str(deadline_date)
             }
 
-            store["records"].append(entry)
+            store["records"].append(generated_entry)
             save_data(store)
 
-            st.success(f"✅ Reference Number Generated: **{ref_num}**")
-            st.json(entry)
+# Output result and download button after form
+if generated_entry:
+    st.success(f"✅ Reference Number Generated: **{generated_entry['reference_number']}**")
+    st.json(generated_entry)
 
-            st.download_button(
-                label="Download Entry as JSON",
-                data=json.dumps(entry, indent=4),
-                file_name=f"{ref_num}.json",
-                mime="application/json"
-            )
+    st.download_button(
+        label="Download Entry as JSON",
+        data=json.dumps(generated_entry, indent=4),
+        file_name=f"{generated_entry['reference_number']}.json",
+        mime="application/json"
+    )
 
 # Record Viewer Section
 st.markdown("---")
