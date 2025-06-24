@@ -10,8 +10,11 @@ data_file = 'reference_data.json'
 # Load or initialize data
 def load_data():
     if os.path.exists(data_file):
-        with open(data_file, 'r') as f:
-            return json.load(f)
+        try:
+            with open(data_file, 'r') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            return {"last_number": 3458, "records": []}
     else:
         return {"last_number": 3458, "records": []}
 
