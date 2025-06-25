@@ -23,22 +23,37 @@ def save_data(data):
         json.dump(data, f, indent=4)
 
 # Streamlit App
-st.set_page_config(page_title="MCE Reference Generator", layout="centered")
+st.set_page_config(page_title="MCE Reference Generator", layout="wide", initial_sidebar_state="collapsed")
 st.title("🔧 MCE Reference Generator")
 
 # Load data
 store = load_data()
 
-# Welcome message and login interface
-st.markdown("### 👋 Welcome to the MCE Reference Generator")
-st.markdown("Please log in to continue.")
+# Session state for user login
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "user_identity" not in st.session_state:
+    st.session_state.user_identity = ""
 
-usernames = ["Ahmed", "Fatima", "Salim", "Noura", "Khalid"]  # Modify as needed
-user_identity = st.selectbox("Select your name", usernames)
-login_button = st.button("Log In")
+# Welcome/Login screen
+if not st.session_state.logged_in:
+    st.markdown("### 👋 Welcome to the MCE Reference Generator")
+    st.markdown("Please log in to continue.")
 
-if not login_button:
+    usernames = ["Ahmed", "Fatima", "Salim", "Noura", "Khalid"]  # Modify as needed
+    selected_user = st.selectbox("Select your name", usernames)
+    if st.button("Log In"):
+        st.session_state.logged_in = True
+        st.session_state.user_identity = selected_user
+        st.experimental_rerun()
     st.stop()
+
+# Logout option
+st.sidebar.write(f"Logged in as: {st.session_state.user_identity}")
+if st.sidebar.button("Log Out"):
+    st.session_state.logged_in = False
+    st.session_state.user_identity = ""
+    st.experimental_rerun()
 
 # State variable for result
 generated_entry = None
@@ -57,7 +72,7 @@ with st.form("reference_form"):
     submitted = st.form_submit_button("Generate Reference Number")
 
     if submitted:
-        if not all([project_name, description, user_identity, rfq_number]):
+        if not all([project_name, description, st.session_state.user_identity, rfq_number]):
             st.error("Please fill in all fields.")
         else:
             store["last_number"] += 1
@@ -68,7 +83,7 @@ with st.form("reference_form"):
                 "category": category,
                 "project_name": project_name,
                 "description": description,
-                "user": user_identity,
+                "user": st.session_state.user_identity,
                 "rfq_number": rfq_number,
                 "issue_date": str(issue_date),
                 "deadline_date": str(deadline_date)
