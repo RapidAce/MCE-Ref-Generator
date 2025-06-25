@@ -23,16 +23,21 @@ def save_data(data):
         json.dump(data, f, indent=4)
 
 # Streamlit App
+st.set_page_config(page_title="MCE Reference Generator", layout="centered")
 st.title("🔧 MCE Reference Generator")
 
 # Load data
 store = load_data()
 
-# User Authentication (Simple Identity Field)
-st.sidebar.header("User Login")
-user_identity = st.sidebar.text_input("Enter your username")
-if not user_identity:
-    st.warning("Please enter your username in the sidebar to use the tool.")
+# Welcome message and login interface
+st.markdown("### 👋 Welcome to the MCE Reference Generator")
+st.markdown("Please log in to continue.")
+
+usernames = ["Ahmed", "Fatima", "Salim", "Noura", "Khalid"]  # Modify as needed
+user_identity = st.selectbox("Select your name", usernames)
+login_button = st.button("Log In")
+
+if not login_button:
     st.stop()
 
 # State variable for result
