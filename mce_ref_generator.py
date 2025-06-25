@@ -40,12 +40,12 @@ if not st.session_state.logged_in:
     st.markdown("### 👋 Welcome to the MCE Reference Generator")
     st.markdown("Please log in to continue.")
 
-    usernames = ["Ahmed", "Fatima", "Salim", "Noura", "Khalid"]  # Modify as needed
+    usernames = ["Koroush Adib", "Sari Salame", "Abdullah Selim", "Saziya Parker"]  # Modify as needed
     selected_user = st.selectbox("Select your name", usernames)
     if st.button("Log In"):
         st.session_state.logged_in = True
         st.session_state.user_identity = selected_user
-        st.experimental_rerun()
+        st.rerun()
     st.stop()
 
 # Logout option
@@ -53,7 +53,7 @@ st.sidebar.write(f"Logged in as: {st.session_state.user_identity}")
 if st.sidebar.button("Log Out"):
     st.session_state.logged_in = False
     st.session_state.user_identity = ""
-    st.experimental_rerun()
+    st.rerun()
 
 # State variable for result
 generated_entry = None
